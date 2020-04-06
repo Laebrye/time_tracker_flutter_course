@@ -9,7 +9,9 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 
 class EmailSignInFormStateful extends StatefulWidget
     with EmailAndPasswordValidators {
-  EmailSignInFormStateful();
+  EmailSignInFormStateful({this.onSignedIn});
+
+  final VoidCallback onSignedIn;
 
   @override
   _EmailSignInFormStatefulState createState() =>
@@ -58,7 +60,9 @@ class _EmailSignInFormStatefulState extends State<EmailSignInFormStateful> {
           _password,
         );
       }
-      Navigator.of(context).pop();
+      if (widget.onSignedIn != null) {
+        widget.onSignedIn();
+      }
     } on PlatformException catch (e) {
       print(e);
       PlatformExceptionAlertDialog(
@@ -105,6 +109,7 @@ class _EmailSignInFormStatefulState extends State<EmailSignInFormStateful> {
     bool showErrorText =
         _submitted && !widget.passwordValidator.isValid(_password);
     return TextField(
+      key: Key('password'),
       controller: _passwordController,
       focusNode: _passwordFocusNode,
       decoration: InputDecoration(
@@ -129,6 +134,7 @@ class _EmailSignInFormStatefulState extends State<EmailSignInFormStateful> {
   TextField _buildEmailTextField() {
     bool showErrorText = _submitted && !widget.emailValidator.isValid(_email);
     return TextField(
+      key: Key('email'),
       controller: _emailController,
       autocorrect: false,
       focusNode: _emailFocusNode,
